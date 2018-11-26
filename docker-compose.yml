@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  consoleappdockerpoc:
+    image: ${DOCKER_REGISTRY-}consoleappdockerpoc
+    build:
+      context: .
+      dockerfile: ConsoleAppDockerPoC/Dockerfile

@@ -1,0 +1,20 @@
+FROM microsoft/dotnet:2.1-aspnetcore-runtime AS base
+WORKDIR /app
+#EXPOSE 52999
+#EXPOSE 44321
+
+FROM microsoft/dotnet:2.1-sdk AS build
+WORKDIR /src
+COPY ConsoleAppDockerPoC/ConsoleAppDockerPoC.csproj ConsoleAppDockerPoC/
+RUN dotnet restore ConsoleAppDockerPoC/ConsoleAppDockerPoC.csproj
+COPY . .
+WORKDIR /src/ConsoleAppDockerPoC
+RUN dotnet build ConsoleAppDockerPoC.csproj -c Release -o /app
+
+FROM build AS publish
+RUN dotnet publish ConsoleAppDockerPoC.csproj -c Release -o /app
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app .
+ENTRYPOINT ["./ConsoleAppDockerPoC"]
